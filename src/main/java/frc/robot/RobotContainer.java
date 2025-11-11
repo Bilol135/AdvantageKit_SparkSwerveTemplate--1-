@@ -14,7 +14,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,7 +35,6 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -68,14 +66,13 @@ public class RobotContainer {
                 new ModuleIOSpark(1),
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3));
-         // Real robot, instantiate hardware IO implementations
-         vision =
-         new Vision(
-             drive::addVisionMeasurement,
-             new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
-             //new VisionIOLimelight(camera1Name, drive::getRotation));
+        // Real robot, instantiate hardware IO implementations
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+        // new VisionIOLimelight(camera1Name, drive::getRotation));
         break;
-        
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -90,8 +87,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose));
-                //new VisionIOPhotonVisionSim(VisionConstants.camera1Name, robotToCamera1, drive::getPose));
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose));
+        // new VisionIOPhotonVisionSim(VisionConstants.camera1Name, robotToCamera1,
+        // drive::getPose));
         break;
 
       default:
@@ -143,19 +142,19 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
+            () -> controller.getLeftX(),
             () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    // Lock to 0° when A button is held
-    controller
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> new Rotation2d()));
+    // // Lock to 0° when A button is held
+    // controller
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -170,7 +169,7 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-                
+
     // Auto aim command example
     @SuppressWarnings("resource")
     PIDController aimController = new PIDController(0.2, 0.0, 0.0);
@@ -184,10 +183,8 @@ public class RobotContainer {
                 },
                 () -> {
                   drive.run(0.0, aimController.calculate(vision.getTargetX(0).getRadians()));
-                  
                 },
                 drive));
- 
   }
 
   /**

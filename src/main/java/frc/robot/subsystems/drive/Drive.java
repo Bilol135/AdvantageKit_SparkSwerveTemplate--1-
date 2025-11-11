@@ -121,6 +121,8 @@ public class Drive extends SubsystemBase {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+
+    setXModules();
   }
 
   @Override
@@ -260,6 +262,11 @@ public class Drive extends SubsystemBase {
       states[i] = modules[i].getPosition();
     }
     return states;
+  }
+  // set rotation of right front and back left modules 90 degrees to the right
+  public void setXModules() {
+    modules[1].turn90DegreesRight();
+    modules[2].turn90DegreesRight();
   }
 
   /** Returns the measured chassis speeds of the robot. */

@@ -113,6 +113,12 @@ public class Module {
   public SwerveModulePosition[] getOdometryPositions() {
     return odometryPositions;
   }
+  // turn 90 degrees right
+  public void turn90DegreesRight() {
+    Rotation2d currentAngle = getAngle();
+    Rotation2d targetAngle = currentAngle.plus(Rotation2d.fromDegrees(90.0));
+    io.setTurnPosition(targetAngle);
+  }
 
   /** Returns the timestamps of the samples received this cycle. */
   public double[] getOdometryTimestamps() {
